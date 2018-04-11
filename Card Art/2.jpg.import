@@ -1,0 +1,32 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/2.jpg-0a407f07e6197de52124d28cca5c2dfa.stex"
+
+[deps]
+
+source_file="res://Card Art/2.jpg"
+source_md5="1bf5262129d86e23d91687ed3dd65d3f"
+
+dest_files=[ "res://.import/2.jpg-0a407f07e6197de52124d28cca5c2dfa.stex" ]
+dest_md5="59a8b5b18a3d37c4b09b57bf2e6f7509"
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0
