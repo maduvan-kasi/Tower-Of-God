@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/4.png-3b96c0714a36e3eb3b89b96e59e245fc.stex"
+path="res://.import/tl.jpg-f4d52035ee7f160abac6ea631915f8e2.stex"
 
 [deps]
 
-source_file="res://Card Art/4.png"
-source_md5="579060229542e0d5cb111a5364a8e237"
+source_file="res://Card Art/tl.jpg"
+source_md5="f1d403af0e4dfbd7a46a54aeefabb0cb"
 
-dest_files=[ "res://.import/4.png-3b96c0714a36e3eb3b89b96e59e245fc.stex" ]
-dest_md5="8073d07faf5b5fe8a3deab5f14255f04"
+dest_files=[ "res://.import/tl.jpg-f4d52035ee7f160abac6ea631915f8e2.stex" ]
+dest_md5="7d6b2f47336f42f382ac1fa6bb3b7503"
 
 [params]
 
@@ -28,5 +28,5 @@ process/premult_alpha=false
 process/HDR_as_SRGB=false
 stream=false
 size_limit=0
-detect_3d=false
+detect_3d=true
 svg/scale=1.0

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/150px-Prince_Keleseth_full.jpg-782498433b4bbaceace24a5bc5d91696.stex"
+path="res://.import/sc.jpg-5f2079d18f33da1885d9ca0a689e6a0d.stex"
 
 [deps]
 
-source_file="res://Card Art/150px-Prince_Keleseth_full.jpg"
-source_md5="7764273363fb4ec85b38e14ff9547755"
+source_file="res://Card Art/sc.jpg"
+source_md5="b7c7329ef4c10e477e6691da083d62f7"
 
-dest_files=[ "res://.import/150px-Prince_Keleseth_full.jpg-782498433b4bbaceace24a5bc5d91696.stex" ]
-dest_md5="0b1c584374847f5993b052af855eabd6"
+dest_files=[ "res://.import/sc.jpg-5f2079d18f33da1885d9ca0a689e6a0d.stex" ]
+dest_md5="ddb167410a038d0605a0ddcd5c643078"
 
 [params]
 
