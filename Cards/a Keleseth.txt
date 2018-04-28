@@ -1,0 +1,3 @@
+NAME:Prince Keleseth
+IMAGE:pk.jpg
+LIGHT_EFFECT:oc +2

@@ -1,0 +1,3 @@
+NAME:Divine Commander
+IMAGE:dc.png
+LIGHT_EFFECT:oc +2

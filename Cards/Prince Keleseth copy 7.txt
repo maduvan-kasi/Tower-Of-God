@@ -1,0 +1,3 @@
+NAME:Tar Lord
+IMAGE:tl.jpg
+LIGHT_EFFECT:oc +2

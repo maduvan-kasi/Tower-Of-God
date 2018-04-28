@@ -1,0 +1,3 @@
+NAME:Razorfen Hunter
+IMAGE:rh.jpg
+LIGHT_EFFECT:oc +2

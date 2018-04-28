@@ -1,0 +1,3 @@
+NAME:Jazzarus
+IMAGE:j.jpg
+LIGHT_EFFECT:oc +2

@@ -8,7 +8,7 @@
 custom_solver_bias = 0.0
 extents = Vector2( 63.8361, 63.8263 )
 
-[node name="Card" type="Area2D"]
+[node name="Card" type="Area2D" index="0"]
 
 position = Vector2( 497.555, 305.419 )
 input_pickable = true
@@ -22,7 +22,9 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
-NAME = "Nick Cheng"
+NAME = null
+IMAGE = null
+LIGHT_EFFECT = null
 
 [node name="Art" type="Sprite" parent="." index="0"]
 

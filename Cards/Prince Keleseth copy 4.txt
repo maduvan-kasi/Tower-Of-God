@@ -1,0 +1,3 @@
+NAME:Prince KLiam
+IMAGE:pl.png
+LIGHT_EFFECT:oc +2

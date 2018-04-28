@@ -1,6 +1,8 @@
 extends Area2D
 
 export (String) var NAME
+export (String) var IMAGE
+export (String) var LIGHT_EFFECT
 var screensize
 
 signal click
