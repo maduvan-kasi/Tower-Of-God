@@ -15,7 +15,6 @@ func make_deck():
 		dir.list_dir_begin(true, true)
 		var file_name = dir.get_next()
 		while file_name != "":
-			print(file_name)
 			card_file.open("res://Cards/" + file_name, card_file.READ)
 			var card = Card.instance()
 			var next_attr = card_file.get_csv_line(":")
@@ -36,10 +35,18 @@ func draw_card():
 	sizeDraw.y = 128 / sizeDraw.y
 	draw.get_child(0).set_scale(sizeDraw)
 	field.append(draw)
-	add_child(draw)
-	draw.connect("click", self, "draw_card")
-	draw.global_position = Vector2(randi() % 1024, randi() % 600)
+	get_node("Field_PS").add_child(draw)
 	draw.get_child(2).append_bbcode("[center][color=black]" + draw.NAME + "[/color][/center]")
+	draw_field(get_node("Field_PS"), 50)
+	
+func draw_field(field_node, gap):
+	var num_cards = field_node.get_child_count() - 1
+	var length = -465
+	var offset = -465 + ((num_cards * (128 + gap) - gap) / 2) - 64
+	for i in num_cards:
+		var card = field_node.get_child(i+1)
+		card.position = Vector2(length - offset, 0)
+		length += 128 + gap
 	
 func shuffle_deck():
 	var temp_deck = []
@@ -53,7 +60,6 @@ func _ready():
 	randomize()
 	make_deck()
 	shuffle_deck()
-	draw_card()
 
 func _process(delta):
 	pass
