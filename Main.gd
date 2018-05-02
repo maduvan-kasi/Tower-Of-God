@@ -4,7 +4,8 @@ var image = File.new()
 var loadedImage
 
 var deck = []
-var field = []
+
+var phase = "Draw_PS"
 
 export (PackedScene) var Card
 
@@ -26,7 +27,7 @@ func make_deck():
 			file_name = dir.get_next()
 		dir.list_dir_end()
 
-func draw_card():
+func draw_card(field):
 	var draw = deck.pop_front()
 	loadedImage = load("res://Card Art/" + draw.IMAGE)
 	draw.get_child(0).set_texture(loadedImage)
@@ -34,10 +35,9 @@ func draw_card():
 	sizeDraw.x = 128 / sizeDraw.x
 	sizeDraw.y = 128 / sizeDraw.y
 	draw.get_child(0).set_scale(sizeDraw)
-	field.append(draw)
-	get_node("Field_PS").add_child(draw)
+	field.add_child(draw)
 	draw.get_child(2).append_bbcode("[center][color=black]" + draw.NAME + "[/color][/center]")
-	draw_field(get_node("Field_PS"), 50)
+	draw_field(field, 50)
 	
 func draw_field(field_node, gap):
 	var num_cards = field_node.get_child_count() - 1
@@ -55,11 +55,30 @@ func shuffle_deck():
 		temp_deck.append(deck[i])
 		deck.remove(i)
 	deck = temp_deck
+	
+func mouse_input(object):
+	if object.get_parent() == get_node("Player"):
+		if phase == "Draw_PS":
+			draw_card(get_node("Player/Field_PS"))
+			phase = "End_PS"
+		else:
+			print("It is not your draw phase.")
+	elif object.get_parent() == get_node("Enemy"):
+		if phase == "Draw_ES":
+			draw_card(get_node("Enemy/Field_ES"))
+			phase = "End_ES"
+		else:
+			print("It is not YOUR draw phase.")
 
 func _ready():
 	randomize()
 	make_deck()
 	shuffle_deck()
-
-func _process(delta):
-	pass
+	
+	var num_sides = get_child_count()
+	for i in num_sides:
+		var num_nodes = get_child_count()
+		for j in num_nodes:
+			var curr = get_child(i).get_child(j)
+			if curr.get_class() == "Area2D":
+				curr.connect("click", self, "mouse_input", [curr])

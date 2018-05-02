@@ -4,19 +4,29 @@
 [ext_resource path="res://Card.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Field.tscn" type="PackedScene" id=3]
 
-[node name="Main" type="Node" index="0"]
+[node name="Game" type="Node" index="0"]
 
 script = ExtResource( 1 )
 Card = ExtResource( 2 )
 
-[node name="Deck_PS" parent="." index="0" instance=ExtResource( 2 )]
+[node name="Player" type="Node" parent="." index="0"]
+
+[node name="Deck_PS" parent="Player" index="0" instance=ExtResource( 2 )]
 
 position = Vector2( 887.948, 495.382 )
 
-[node name="Field_PS" parent="." index="1" instance=ExtResource( 3 )]
+[node name="Field_PS" parent="Player" index="1" instance=ExtResource( 3 )]
 
 position = Vector2( 398.988, 499.15 )
 
-[connection signal="click" from="Deck_PS" to="." method="draw_card"]
+[node name="Enemy" type="Node" parent="." index="1"]
+
+[node name="Deck_ES" parent="Enemy" index="0" instance=ExtResource( 2 )]
+
+position = Vector2( 887.948, 96.8673 )
+
+[node name="Field_ES" parent="Enemy" index="1" instance=ExtResource( 3 )]
+
+position = Vector2( 398.988, 100.635 )
 
 
