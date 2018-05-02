@@ -3,13 +3,14 @@ extends Node
 var image = File.new()
 var loadedImage
 
-var deck = []
+var deck_0 = []
+var deck_1 = []
 
-var phase = "Draw_PS"
+var phase = [0, "Draw"]
 
 export (PackedScene) var Card
 
-func make_deck():
+func make_deck(deck):
 	var dir = Directory.new()
 	if dir.open("res://Cards") == OK:
 		var card_file = File.new()
@@ -26,8 +27,9 @@ func make_deck():
 			deck.append(card)
 			file_name = dir.get_next()
 		dir.list_dir_end()
+	return deck
 
-func draw_card(field):
+func draw_card(deck, field):
 	var draw = deck.pop_front()
 	loadedImage = load("res://Card Art/" + draw.IMAGE)
 	draw.get_child(0).set_texture(loadedImage)
@@ -48,36 +50,38 @@ func draw_field(field_node, gap):
 		card.position = Vector2(length - offset, 0)
 		length += 128 + gap
 	
-func shuffle_deck():
+func shuffle_deck(deck):
 	var temp_deck = []
 	while len(deck) > 0:
 		var i = randi() % len(deck)
 		temp_deck.append(deck[i])
 		deck.remove(i)
-	deck = temp_deck
+	return temp_deck
 	
 func mouse_input(object):
-	if object.get_parent() == get_node("Player"):
-		if phase == "Draw_PS":
-			draw_card(get_node("Player/Field_PS"))
-			phase = "End_PS"
-		else:
-			print("It is not your draw phase.")
-	elif object.get_parent() == get_node("Enemy"):
-		if phase == "Draw_ES":
-			draw_card(get_node("Enemy/Field_ES"))
-			phase = "End_ES"
-		else:
-			print("It is not YOUR draw phase.")
+	if object.get_parent() == get_child(phase[0]):
+		if object.get_name() == "Deck":
+			if phase[1] == "Draw":
+				draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Field"))
+				phase[1] = "End"
+			else:
+				print("You can't do that right now.")
+		elif object.get_name() == "End":
+			phase[0] = int(!phase[0])
+			phase[1] = "Draw"
+	else:
+		print("It is not your turn.")
 
 func _ready():
 	randomize()
-	make_deck()
-	shuffle_deck()
+	deck_0 = make_deck(deck_0)
+	deck_1 = make_deck(deck_1)
+	deck_0 = shuffle_deck(deck_0)
+	deck_1 = shuffle_deck(deck_1)
 	
 	var num_sides = get_child_count()
 	for i in num_sides:
-		var num_nodes = get_child_count()
+		var num_nodes = get_child(i).get_child_count()
 		for j in num_nodes:
 			var curr = get_child(i).get_child(j)
 			if curr.get_class() == "Area2D":

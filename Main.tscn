@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://Card.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Field.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Field.gd" type="Script" id=4]
+[ext_resource path="res://End.tscn" type="PackedScene" id=5]
 
 [node name="Game" type="Node" index="0"]
 
@@ -11,22 +13,38 @@ Card = ExtResource( 2 )
 
 [node name="Player" type="Node" parent="." index="0"]
 
-[node name="Deck_PS" parent="Player" index="0" instance=ExtResource( 2 )]
+[node name="Deck" parent="Player" index="0" instance=ExtResource( 2 )]
 
-position = Vector2( 887.948, 495.382 )
+position = Vector2( 887.948, 480.937 )
+NAME = null
+IMAGE = null
+LIGHT_EFFECT = null
 
-[node name="Field_PS" parent="Player" index="1" instance=ExtResource( 3 )]
+[node name="Field" parent="Player" index="1" instance=ExtResource( 3 )]
 
 position = Vector2( 398.988, 499.15 )
+script = ExtResource( 4 )
+
+[node name="End" parent="Player" index="2" instance=ExtResource( 5 )]
+
+position = Vector2( 887.099, 564.208 )
 
 [node name="Enemy" type="Node" parent="." index="1"]
 
-[node name="Deck_ES" parent="Enemy" index="0" instance=ExtResource( 2 )]
+[node name="Deck" parent="Enemy" index="0" instance=ExtResource( 2 )]
 
-position = Vector2( 887.948, 96.8673 )
+position = Vector2( 887.948, 84.9713 )
+NAME = null
+IMAGE = null
+LIGHT_EFFECT = null
 
-[node name="Field_ES" parent="Enemy" index="1" instance=ExtResource( 3 )]
+[node name="Field" parent="Enemy" index="1" instance=ExtResource( 3 )]
 
 position = Vector2( 398.988, 100.635 )
+script = ExtResource( 4 )
+
+[node name="End" parent="Enemy" index="2" instance=ExtResource( 5 )]
+
+position = Vector2( 887.099, 168.243 )
 
 
