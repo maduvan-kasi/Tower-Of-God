@@ -1,8 +1,11 @@
+# Inheritance
 extends Node
 
+# 
 var image = File.new()
 var loadedImage
 
+# Globals 
 var deck_0 = []
 var deck_1 = []
 
@@ -24,6 +27,7 @@ func make_deck(deck):
 				card.set(next_attr[0], next_attr[1])
 				next_attr = card_file.get_csv_line(":")
 			card_file.close()
+			card.connect("click", self, "mouse_input", [card])
 			deck.append(card)
 			file_name = dir.get_next()
 		dir.list_dir_end()
@@ -59,16 +63,29 @@ func shuffle_deck(deck):
 	return temp_deck
 	
 func mouse_input(object):
+	var path = object.get_path()
+	print(path)
+	print(get_child(phase[0]).has_node(path))
 	if object.get_parent() == get_child(phase[0]):
 		if object.get_name() == "Deck":
 			if phase[1] == "Draw":
-				draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Field"))
-				phase[1] = "End"
+				draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
+				phase[1] = "Prep"
 			else:
 				print("You can't do that right now.")
+		elif object.get_name() == "Field":
+			if phase[1] == "Prep":
+				object.get_node("../Light_Field").add_child(object)
+				object.get_parent().remove_child(object)
+				draw_field(get_node("Player/Shadow_Field"), 50)
+				draw_field(get_node("Player/Light_Field"), 50)
+				draw_field(get_node("Enemy/Shadow_Field"), 50)
+				draw_field(get_node("Enemy/Light_Field"), 50)
 		elif object.get_name() == "End":
-			phase[0] = int(!phase[0])
+			phase[0] = (phase[0] - 1) * -1
 			phase[1] = "Draw"
+		else:
+			pass
 	else:
 		print("It is not your turn.")
 

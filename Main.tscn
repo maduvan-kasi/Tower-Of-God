@@ -2,9 +2,9 @@
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://Card.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Field.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Field.gd" type="Script" id=4]
-[ext_resource path="res://End.tscn" type="PackedScene" id=5]
+[ext_resource path="res://End.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Field.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Field.gd" type="Script" id=5]
 
 [node name="Game" type="Node" index="0"]
 
@@ -13,37 +13,43 @@ Card = ExtResource( 2 )
 
 [node name="Player" type="Node" parent="." index="0"]
 
-[node name="Deck" parent="Player" index="0" instance=ExtResource( 2 )]
+[node name="Deck" parent="Player" index="0" instance=ExtResource( 3 )]
 
-position = Vector2( 887.948, 480.937 )
-NAME = null
-IMAGE = null
-LIGHT_EFFECT = null
+position = Vector2( 887.099, 491.133 )
 
-[node name="Field" parent="Player" index="1" instance=ExtResource( 3 )]
+[node name="Shadow_Field" parent="Player" index="1" instance=ExtResource( 4 )]
 
-position = Vector2( 398.988, 499.15 )
-script = ExtResource( 4 )
+position = Vector2( 398.988, 531.439 )
+script = ExtResource( 5 )
+_sections_unfolded = [ "Transform", "Z Index" ]
 
-[node name="End" parent="Player" index="2" instance=ExtResource( 5 )]
+[node name="Light_Field" parent="Player" index="2" instance=ExtResource( 4 )]
 
-position = Vector2( 887.099, 564.208 )
+position = Vector2( 398.988, 426.074 )
+script = ExtResource( 5 )
+_sections_unfolded = [ "Transform", "Z Index" ]
+
+[node name="End" parent="Player" index="3" instance=ExtResource( 3 )]
+
+position = Vector2( 887.099, 561.659 )
 
 [node name="Enemy" type="Node" parent="." index="1"]
 
-[node name="Deck" parent="Enemy" index="0" instance=ExtResource( 2 )]
+[node name="Deck" parent="Enemy" index="0" instance=ExtResource( 3 )]
 
-position = Vector2( 887.948, 84.9713 )
-NAME = null
-IMAGE = null
-LIGHT_EFFECT = null
+position = Vector2( 887.099, 96.8671 )
 
-[node name="Field" parent="Enemy" index="1" instance=ExtResource( 3 )]
+[node name="Shadow_Field" parent="Enemy" index="1" instance=ExtResource( 4 )]
 
-position = Vector2( 398.988, 100.635 )
-script = ExtResource( 4 )
+position = Vector2( 398.988, 70.8951 )
+script = ExtResource( 5 )
 
-[node name="End" parent="Enemy" index="2" instance=ExtResource( 5 )]
+[node name="Light_Field" parent="Enemy" index="2" instance=ExtResource( 4 )]
+
+position = Vector2( 398.988, 177.109 )
+script = ExtResource( 5 )
+
+[node name="End" parent="Enemy" index="3" instance=ExtResource( 3 )]
 
 position = Vector2( 887.099, 168.243 )
 

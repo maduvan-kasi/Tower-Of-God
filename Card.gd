@@ -5,15 +5,20 @@ export(String) var IMAGE
 export(String) var LIGHT_EFFECT
 
 var screensize
+var mouse_over
 
 signal click
 
 func _ready():
 	screensize = get_viewport_rect().size
+	
+	connect("mouse_entered", self, "mouse_status", [true])
+	connect("mouse_exited", self, "mouse_status", [false])
 
-func _input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.is_pressed():
+func _unhandled_input(event):
+	if mouse_over and event is InputEventMouseButton and event.is_pressed():
+		# get_tree().set_input_as_handled()
 		emit_signal("click")
 
-func _process(delta):
-	pass
+func mouse_status(over):
+	mouse_over = over

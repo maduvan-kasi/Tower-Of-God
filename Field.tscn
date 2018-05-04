@@ -3,7 +3,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
-extents = Vector2( 342.305, 80 )
+extents = Vector2( 342.305, 49.5535 )
 
 [node name="Field" type="Area2D"]
 
