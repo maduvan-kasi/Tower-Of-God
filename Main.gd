@@ -63,24 +63,20 @@ func shuffle_deck(deck):
 	return temp_deck
 	
 func mouse_input(object):
-	var path = object.get_path()
-	print(path)
-	print(get_child(phase[0]).has_node(path))
-	if object.get_parent() == get_child(phase[0]):
+	if get_child(phase[0]).is_a_parent_of(object):
 		if object.get_name() == "Deck":
 			if phase[1] == "Draw":
 				draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
 				phase[1] = "Prep"
 			else:
 				print("You can't do that right now.")
-		elif object.get_name() == "Field":
+		elif object.get_parent().get_name() == "Shadow_Field":
 			if phase[1] == "Prep":
-				object.get_node("../Light_Field").add_child(object)
 				object.get_parent().remove_child(object)
-				draw_field(get_node("Player/Shadow_Field"), 50)
-				draw_field(get_node("Player/Light_Field"), 50)
-				draw_field(get_node("Enemy/Shadow_Field"), 50)
-				draw_field(get_node("Enemy/Light_Field"), 50)
+				var side = get_child(phase[0])
+				side.get_node("Light_Field").add_child(object)
+				draw_field(side.get_node("Shadow_Field"), 50)
+				draw_field(side.get_node("Light_Field"), 50)
 		elif object.get_name() == "End":
 			phase[0] = (phase[0] - 1) * -1
 			phase[1] = "Draw"
