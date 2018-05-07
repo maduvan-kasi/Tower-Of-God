@@ -3,6 +3,7 @@ extends Area2D
 export(String) var NAME
 export(String) var IMAGE
 export(String) var LIGHT_EFFECT
+export(int) var OCCUPIABILITY = 1
 
 var screensize
 var mouse_over
