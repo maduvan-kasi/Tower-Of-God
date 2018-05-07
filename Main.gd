@@ -6,6 +6,8 @@ var deck_0 = [] # Player's Deck
 var deck_1 = [] # Enemy's Deck
 var phase = [0, "Draw"] # [0] = player, [1] = turn phase
 
+var effect_function
+
 # Exports
 export (PackedScene) var Card
 
@@ -88,33 +90,45 @@ func activate_effect(card):
 	if int(effect[0]) == 0:
 		target = target_cards[target_names.find(effect[1])]
 	else:
-		print(effect[0])
+		print("Select a target")
+		target = yield()
 	if effect[2] == "occ":
 		target.OCCUPIABILITY += int(effect[3])
-		print(target.OCCUPIABILITY)
 	else:
 		print(effect[2])
+	return card
 	
 # function to catch GUI input and decide what to do
 func mouse_input(object):
-	if get_child(phase[0]).is_a_parent_of(object):
-		if object.get_name() == "Deck":
-			if phase[1] == "Draw":
-				draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
-				phase[1] = "Prep"
-			else:
-				print("You can't do that right now.")
-		elif object.get_parent().get_name() == "Shadow_Field":
-			if phase[1] == "Prep":
-				activate_effect(object)
-				move_card(object, get_child(phase[0]), "Light_Field")
-		elif object.get_name() == "End":
-			phase[0] = (phase[0] - 1) * -1
-			phase[1] = "Draw"
+	if phase[1] == "Activate":
+		if object.get_filename() == Card.get_path():
+			object = effect_function.resume(object)
+			move_card(object, get_child(phase[0]), "Light_Field")
+			phase[1] = "Prep"
 		else:
-			pass
+			print("That is not a valid target.")
 	else:
-		print("It is not your turn.")
+		if get_child(phase[0]).is_a_parent_of(object):
+			if object.get_name() == "Deck":
+				if phase[1] == "Draw":
+					draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
+					phase[1] = "Prep"
+				else:
+					print("You can't do that right now.")
+			elif object.get_parent().get_name() == "Shadow_Field":
+				if phase[1] == "Prep":
+					phase[1] = "Activate"
+					effect_function = activate_effect(object)
+					if not(effect_function is GDScriptFunctionState):
+						move_card(object, get_child(phase[0]), "Light_Field")
+						phase[1] = "Prep"
+			elif object.get_name() == "End":
+				phase[0] = (phase[0] - 1) * -1
+				phase[1] = "Draw"
+			else:
+				pass
+		else:
+			print("It is not your turn.")
 
 func _ready():
 	
