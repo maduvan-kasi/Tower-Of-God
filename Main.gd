@@ -52,6 +52,7 @@ func draw_card(deck, field):
 func update_bbcode(card):
 	card.get_child(2).append_bbcode(card.NAME)
 	card.get_child(4).append_bbcode(str(card.OCCUPIABILITY))
+	card.get_node("Invul_Decal").visible = card.INVUL
 	
 # function to rearrange Cards in Field (graphically)
 func draw_field(field_node, gap):
@@ -92,10 +93,15 @@ func activate_effect(card):
 	else:
 		print("Select a target")
 		target = yield()
+		
 	if effect[2] == "occ":
 		target.OCCUPIABILITY += int(effect[3])
+	elif effect[2] == "inv":
+		target.INVUL = true
+		print("yeet")
 	else:
 		print(effect[2])
+		
 	return card
 	
 # function to catch GUI input and decide what to do
