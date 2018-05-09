@@ -1,0 +1,3 @@
+NAME:Grasshoper
+IMAGE:grasshoper.jpeg
+LIGHT_EFFECT:1,"self","inv",+2

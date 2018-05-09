@@ -1,3 +1,0 @@
-NAME:Argent Commander
-IMAGE:ac.png
-LIGHT_EFFECT:0,"self","inv",+2

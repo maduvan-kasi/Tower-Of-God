@@ -1,0 +1,3 @@
+NAME:Friends
+IMAGE:friends.jpeg
+LIGHT_EFFECT:1,"self","occ",-3

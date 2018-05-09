@@ -1,0 +1,3 @@
+NAME:Flappy_Taffy
+IMAGE:flappy_taffy.jpeg
+LIGHT_EFFECT:0,"self","occ",+1

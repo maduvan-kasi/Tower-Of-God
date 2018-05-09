@@ -1,0 +1,3 @@
+NAME:Aladeeen
+IMAGE:aladeeen.jpeg
+LIGHT_EFFECT:1,"self","occ",+2

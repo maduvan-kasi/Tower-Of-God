@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/j.jpg-077146d286986b3ad93e843e1c657867.stex"
+path="res://.import/flappy_taffy.jpeg-11db0a65572967f0bf056ad51549c246.stex"
 
 [deps]
 
-source_file="res://Card Art/j.jpg"
-source_md5="f8377d3e99c0f59133f0a99f63e0c365"
+source_file="res://Card Art/flappy_taffy.jpeg"
+source_md5="a6584e71fdcbbc76a8f1f30c16d2f2a5"
 
-dest_files=[ "res://.import/j.jpg-077146d286986b3ad93e843e1c657867.stex" ]
-dest_md5="5e05822ff228ae1aefc2fb8df028afd1"
+dest_files=[ "res://.import/flappy_taffy.jpeg-11db0a65572967f0bf056ad51549c246.stex" ]
+dest_md5="645c7e8dbdbc6bc32dd59aa7fc3a526c"
 
 [params]
 

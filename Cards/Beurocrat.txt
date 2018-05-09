@@ -1,0 +1,3 @@
+NAME:Beurocrat
+IMAGE:beurocrat.jpeg
+LIGHT_EFFECT:0,"self","inv",+2

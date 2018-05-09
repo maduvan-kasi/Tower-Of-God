@@ -1,0 +1,3 @@
+NAME:Zachary Paul
+IMAGE:zachary_paul.jpeg
+LIGHT_EFFECT:1,"self","occ",+3

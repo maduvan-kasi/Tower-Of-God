@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/pk.jpg-0c3cc5c9a2b9b27cdb800134d2e83650.stex"
+path="res://.import/King_Meow.jpeg-f6edef80488de182d0cbac160b6f1552.stex"
 
 [deps]
 
-source_file="res://Card Art/pk.jpg"
-source_md5="7764273363fb4ec85b38e14ff9547755"
+source_file="res://Card Art/King_Meow.jpeg"
+source_md5="a004651d663d5128957a2107175b7605"
 
-dest_files=[ "res://.import/pk.jpg-0c3cc5c9a2b9b27cdb800134d2e83650.stex" ]
-dest_md5="0b1c584374847f5993b052af855eabd6"
+dest_files=[ "res://.import/King_Meow.jpeg-f6edef80488de182d0cbac160b6f1552.stex" ]
+dest_md5="1a9bf28a466bc909559e535063c4b76c"
 
 [params]
 

@@ -50,8 +50,8 @@ func draw_card(deck, field):
 	draw_field(field, 50)
 	
 func update_bbcode(card):
-	card.get_child(2).append_bbcode(card.NAME)
-	card.get_child(4).append_bbcode(str(card.OCCUPIABILITY))
+	card.get_child(2).parse_bbcode("[center][color=black]" + card.NAME)
+	card.get_child(4).parse_bbcode("[u][color=red]" + str(card.OCCUPIABILITY))
 	card.get_node("Invul_Decal").visible = card.INVUL
 	
 # function to rearrange Cards in Field (graphically)
@@ -101,6 +101,8 @@ func activate_effect(card):
 		print("yeet")
 	else:
 		print(effect[2])
+		
+	update_bbcode(target)
 		
 	return card
 	

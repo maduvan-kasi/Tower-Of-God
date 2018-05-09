@@ -1,3 +1,0 @@
-NAME:Prince Keleseth
-IMAGE:pk.jpg
-LIGHT_EFFECT:0,"self","occ",+2

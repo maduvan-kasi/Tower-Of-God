@@ -1,0 +1,3 @@
+NAME:King Meow
+IMAGE:king_meow.jpeg
+LIGHT_EFFECT:0,"self","occ",+2

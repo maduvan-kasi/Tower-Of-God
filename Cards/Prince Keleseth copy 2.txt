@@ -1,3 +1,0 @@
-NAME:Razorfen Hunter
-IMAGE:rh.jpg
-LIGHT_EFFECT:1,"self","occ",+2

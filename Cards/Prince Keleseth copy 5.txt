@@ -1,3 +1,0 @@
-NAME:Stonetusk Golem
-IMAGE:sc.jpg
-LIGHT_EFFECT:oc +2

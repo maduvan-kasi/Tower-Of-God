@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/7.jpg-c2748ef909aed12b2a9e04c548fa90ef.stex"
+path="res://.import/beurocrat.jpeg-b5d484f81abde93a01c77997b043b072.stex"
 
 [deps]
 
-source_file="res://Card Art/7.jpg"
-source_md5="f1d403af0e4dfbd7a46a54aeefabb0cb"
+source_file="res://Card Art/beurocrat.jpeg"
+source_md5="4b3c65c5f4d4a4848e9330bd63969918"
 
-dest_files=[ "res://.import/7.jpg-c2748ef909aed12b2a9e04c548fa90ef.stex" ]
-dest_md5="7d6b2f47336f42f382ac1fa6bb3b7503"
+dest_files=[ "res://.import/beurocrat.jpeg-b5d484f81abde93a01c77997b043b072.stex" ]
+dest_md5="ff3d23bd6d6933308c9cf7bd25259a16"
 
 [params]
 
