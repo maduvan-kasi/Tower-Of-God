@@ -1,3 +1,3 @@
 NAME:Kick
 IMAGE:kick.jpeg
-LIGHT_EFFECT:1,"self","occ",+1
+LIGHT_EFFECT:0,"self","occ",+1

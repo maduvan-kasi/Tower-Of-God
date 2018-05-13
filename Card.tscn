@@ -29,12 +29,33 @@ LIGHT_EFFECT = null
 OCCUPIABILITY = 1
 INVUL = false
 
-[node name="Art" type="Sprite" parent="." index="0"]
+[node name="Target_Decal" type="ColorRect" parent="." index="0"]
+
+visible = false
+modulate = Color( 0.65625, 0.268145, 0.0352823, 0.61502 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = -67.0
+margin_top = -66.0
+margin_right = 66.0
+margin_bottom = 66.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+color = Color( 1, 1, 1, 1 )
+_sections_unfolded = [ "Mouse" ]
+
+[node name="Art" type="Sprite" parent="." index="1"]
 
 texture = ExtResource( 2 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="ColorRect" type="ColorRect" parent="." index="1"]
+[node name="ColorRect" type="ColorRect" parent="." index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -53,7 +74,7 @@ size_flags_vertical = 1
 color = Color( 0.914062, 0.708544, 0.417717, 1 )
 _sections_unfolded = [ "Mouse" ]
 
-[node name="RichTextLabel" type="RichTextLabel" parent="." index="2"]
+[node name="Infotext" type="RichTextLabel" parent="." index="3"]
 
 anchor_left = 0.0
 anchor_top = 1.0
@@ -82,12 +103,12 @@ selection_enabled = false
 override_selected_font_color = false
 _sections_unfolded = [ "BBCode", "Mouse" ]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="4"]
 
 shape = SubResource( 1 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="Occupie" type="RichTextLabel" parent="." index="4"]
+[node name="Occupie" type="RichTextLabel" parent="." index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -116,7 +137,7 @@ selection_enabled = false
 override_selected_font_color = false
 _sections_unfolded = [ "BBCode" ]
 
-[node name="Invul_Decal" type="ColorRect" parent="." index="5"]
+[node name="Invul_Decal" type="ColorRect" parent="." index="6"]
 
 visible = false
 modulate = Color( 0.133333, 0.545098, 0.133333, 0.55498 )

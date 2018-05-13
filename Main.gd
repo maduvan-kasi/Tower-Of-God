@@ -7,6 +7,7 @@ var deck_1 = [] # Enemy's Deck
 var phase = [0, "Draw"] # [0] = player, [1] = turn phase
 
 var effect_function
+var legal_fields = []
 
 # Exports
 export (PackedScene) var Card
@@ -40,18 +41,18 @@ func make_deck(deck):
 func draw_card(deck, field):
 	var draw = deck.pop_front()
 	var loadedImage = load("res://Card Art/" + draw.IMAGE)
-	draw.get_child(0).set_texture(loadedImage)
+	draw.get_node("Art").set_texture(loadedImage)
 	var sizeDraw = Vector2(loadedImage.get_size())
 	sizeDraw.x = 128 / sizeDraw.x
 	sizeDraw.y = 128 / sizeDraw.y
-	draw.get_child(0).set_scale(sizeDraw)
+	draw.get_node("Art").set_scale(sizeDraw)
 	field.add_child(draw)
 	update_bbcode(draw)
 	draw_field(field, 50)
 	
 func update_bbcode(card):
-	card.get_child(2).parse_bbcode("[center][color=black]" + card.NAME)
-	card.get_child(4).parse_bbcode("[u][color=red]" + str(card.OCCUPIABILITY))
+	card.get_node("Infotext").parse_bbcode("[center][color=black]" + card.NAME)
+	card.get_node("Occupie").parse_bbcode("[u][color=red]" + str(card.OCCUPIABILITY))
 	card.get_node("Invul_Decal").visible = card.INVUL
 	
 # function to rearrange Cards in Field (graphically)
@@ -91,14 +92,39 @@ func activate_effect(card):
 	if int(effect[0]) == 0:
 		target = target_cards[target_names.find(effect[1])]
 	else:
+		var restriction = effect[1].split("/")
+		legal_fields = []
+		for i in restriction[0]:
+			var side = phase[0]
+			if i == "1":
+				side = (side - 1) * -1
+			legal_fields.append(get_child(side).get_node("Shadow_Field"))
+			legal_fields.append(get_child(side).get_node("Light_Field"))
+		for i in restriction[1]:
+			var j = (int(i) - 1) * -1
+			while j < len(legal_fields):
+				legal_fields.remove(j)
+				j += 1
+				
+		for i in legal_fields:
+			var card_count = i.get_children()
+			for j in card_count:
+				if j.get_class() == "Area2D":
+					j.get_node("Target_Decal").visible = true
+		
 		print("Select a target")
 		target = yield()
+		
+		for i in legal_fields:
+			var card_count = i.get_children()
+			for j in card_count:
+				if j.get_class() == "Area2D":
+					j.get_node("Target_Decal").visible = false
 		
 	if effect[2] == "occ":
 		target.OCCUPIABILITY += int(effect[3])
 	elif effect[2] == "inv":
 		target.INVUL = true
-		print("yeet")
 	else:
 		print(effect[2])
 		
@@ -109,7 +135,7 @@ func activate_effect(card):
 # function to catch GUI input and decide what to do
 func mouse_input(object):
 	if phase[1] == "Activate":
-		if object.get_filename() == Card.get_path():
+		if object.get_filename() == Card.get_path() and object.get_parent() in legal_fields:
 			object = effect_function.resume(object)
 			move_card(object, get_child(phase[0]), "Light_Field")
 			phase[1] = "Prep"
