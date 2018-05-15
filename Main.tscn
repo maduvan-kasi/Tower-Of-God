@@ -33,6 +33,10 @@ _sections_unfolded = [ "Transform", "Z Index" ]
 
 position = Vector2( 887.099, 561.659 )
 
+[node name="Yeet" parent="Player" index="4" instance=ExtResource( 3 )]
+
+position = Vector2( 934.683, 300.798 )
+
 [node name="Enemy" type="Node" parent="." index="1"]
 
 [node name="Deck" parent="Enemy" index="0" instance=ExtResource( 3 )]
@@ -52,5 +56,12 @@ script = ExtResource( 5 )
 [node name="End" parent="Enemy" index="3" instance=ExtResource( 3 )]
 
 position = Vector2( 887.099, 168.243 )
+
+[node name="Sleep" type="Timer" parent="." index="2"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = true
+autostart = false
 
 

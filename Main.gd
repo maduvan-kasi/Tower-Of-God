@@ -52,7 +52,7 @@ func draw_card(deck, field):
 	
 func update_bbcode(card):
 	card.get_node("Infotext").parse_bbcode("[center][color=black]" + card.NAME)
-	card.get_node("Occupie").parse_bbcode("[u][color=red]" + str(card.OCCUPIABILITY))
+	card.get_node("Occupie").parse_bbcode("[u][color=red]" + str(card.OCCUPANCY))
 	card.get_node("Invul_Decal").visible = card.INVUL
 	
 # function to rearrange Cards in Field (graphically)
@@ -118,11 +118,11 @@ func activate_effect(card):
 		for i in legal_fields:
 			var card_count = i.get_children()
 			for j in card_count:
-				if j.get_class() == "Area2D":
+				if j.get_filename() == Card.get_path():
 					j.get_node("Target_Decal").visible = false
 		
 	if effect[2] == "occ":
-		target.OCCUPIABILITY += int(effect[3])
+		target.OCCUPANCY += int(effect[3])
 	elif effect[2] == "inv":
 		target.INVUL = true
 	else:
@@ -132,6 +132,55 @@ func activate_effect(card):
 		
 	return card
 	
+func battle_phase():
+	var allies = get_child(phase[0]).get_node("Light_Field").get_children()
+	var enemies = get_child((phase[0] - 1) * -1).get_node("Light_Field").get_children()
+	
+	if len(allies) == 1:
+		print("There is nothing you can do.")
+	elif len(enemies) == 1:
+		print("You styll win, hol up.")
+	else:
+	
+		var curr_enemy = 0
+		
+		while curr_enemy < len(enemies) and enemies[curr_enemy].get_filename() != Card.get_path():
+			curr_enemy += 1
+			
+		var enemy_alive = true
+		
+		for i in allies:
+			if i.get_filename() == Card.get_path():
+				while i.OCCUPANCY > 0 and enemy_alive:
+					i.OCCUPANCY -= 1
+					enemies[curr_enemy].OCCUPANCY -= 1
+					update_bbcode(i)
+					update_bbcode(enemies[curr_enemy])
+					get_node("Sleep").start()
+					yield(get_node("Sleep"), "timeout")
+					if enemies[curr_enemy].OCCUPANCY == 0:
+						curr_enemy += 1
+						if curr_enemy >= len(enemies):
+							print("You win.")
+							enemy_alive = false
+
+		if enemy_alive:
+			print("You don't win.")
+		get_node("Sleep").start()
+		yield(get_node("Sleep"), "timeout")
+			
+		for i in allies:
+			if i.get_filename() == Card.get_path():
+				i.OCCUPANCY = 1
+				update_bbcode(i)
+
+		for i in enemies:
+			if i.get_filename() == Card.get_path():
+				i.OCCUPANCY = 1
+				update_bbcode(i)
+
+	phase[1] = "End"
+
 # function to catch GUI input and decide what to do
 func mouse_input(object):
 	if phase[1] == "Activate":
@@ -157,8 +206,15 @@ func mouse_input(object):
 						move_card(object, get_child(phase[0]), "Light_Field")
 						phase[1] = "Prep"
 			elif object.get_name() == "End":
-				phase[0] = (phase[0] - 1) * -1
-				phase[1] = "Draw"
+				if phase[1] == "Prep":
+					phase[1] = "Battle"
+					battle_phase()
+				elif phase[1] == "End":
+					phase[0] = (phase[0] - 1) * -1
+					phase[1] = "Draw"
+				else:
+					print(phase[1])
+					print("You can't do that right now.")
 			else:
 				pass
 		else:
