@@ -7,7 +7,10 @@ var deck_1 = [] # Enemy's Deck
 var phase = [0, "Draw"] # [0] = player, [1] = turn phase
 
 var effect_function
+var battle_function
 var legal_fields = []
+
+var temp_overload
 
 # Exports
 export (PackedScene) var Card
@@ -82,6 +85,29 @@ func move_card(card, side, dest_field):
 	draw_field(side.get_node("Shadow_Field"), 50)
 	draw_field(side.get_node("Light_Field"), 50)
 	
+func default_card(card):
+	card.OCCUPANCY = 1
+	card.INVUL = false
+	update_bbcode(card)
+	
+func select_target():
+	
+	for i in legal_fields:
+		var card_count = i.get_children()
+		for j in card_count:
+			if j.get_filename() == Card.get_path():
+				j.get_node("Target_Decal").visible = true
+	
+	print("Select a target")
+	yield()
+	print("Good job.")
+	
+	for i in legal_fields:
+		var card_count = i.get_children()
+		for j in card_count:
+			if j.get_filename() == Card.get_path():
+				j.get_node("Target_Decal").visible = false
+	
 func activate_effect(card):
 	var target_names = ["self"]
 	var target_cards = [card]
@@ -106,20 +132,9 @@ func activate_effect(card):
 				legal_fields.remove(j)
 				j += 1
 				
-		for i in legal_fields:
-			var card_count = i.get_children()
-			for j in card_count:
-				if j.get_class() == "Area2D":
-					j.get_node("Target_Decal").visible = true
-		
-		print("Select a target")
+		var select_function = select_target()
 		target = yield()
-		
-		for i in legal_fields:
-			var card_count = i.get_children()
-			for j in card_count:
-				if j.get_filename() == Card.get_path():
-					j.get_node("Target_Decal").visible = false
+		select_function.resume()
 		
 	if effect[2] == "occ":
 		target.OCCUPANCY += int(effect[3])
@@ -132,6 +147,36 @@ func activate_effect(card):
 		
 	return card
 	
+func display_occupancys(allies, enemies):
+	var curr_enemy = 0
+	
+	while curr_enemy < len(enemies) and enemies[curr_enemy].get_filename() != Card.get_path():
+		curr_enemy += 1
+		
+	var enemy_alive = true
+	var excess_occupancy = 0
+	
+	for i in allies:
+		if i.get_filename() == Card.get_path():
+			while i.OCCUPANCY > 0:
+				i.OCCUPANCY -= 1
+				if enemy_alive:
+					update_bbcode(i)
+					enemies[curr_enemy].OCCUPANCY -= 1
+					update_bbcode(enemies[curr_enemy])
+					get_node("Sleep").start()
+					yield(get_node("Sleep"), "timeout")
+					print("Im' back")
+					if enemies[curr_enemy].OCCUPANCY <= 0:
+						curr_enemy += 1
+						if curr_enemy >= len(enemies):
+							print("You win.")
+							enemy_alive = false
+				else:
+					excess_occupancy += 1
+
+	temp_overload = excess_occupancy
+
 func battle_phase():
 	var allies = get_child(phase[0]).get_node("Light_Field").get_children()
 	var enemies = get_child((phase[0] - 1) * -1).get_node("Light_Field").get_children()
@@ -141,55 +186,59 @@ func battle_phase():
 	elif len(enemies) == 1:
 		print("You styll win, hol up.")
 	else:
-	
-		var curr_enemy = 0
-		
-		while curr_enemy < len(enemies) and enemies[curr_enemy].get_filename() != Card.get_path():
-			curr_enemy += 1
-			
-		var enemy_alive = true
-		
-		for i in allies:
-			if i.get_filename() == Card.get_path():
-				while i.OCCUPANCY > 0 and enemy_alive:
-					i.OCCUPANCY -= 1
-					enemies[curr_enemy].OCCUPANCY -= 1
-					update_bbcode(i)
-					update_bbcode(enemies[curr_enemy])
-					get_node("Sleep").start()
-					yield(get_node("Sleep"), "timeout")
-					if enemies[curr_enemy].OCCUPANCY == 0:
-						curr_enemy += 1
-						if curr_enemy >= len(enemies):
-							print("You win.")
-							enemy_alive = false
-
-		if enemy_alive:
+		display_occupancys(allies, enemies)
+		var kill_power = yield()
+		print("Thanks.")
+		if kill_power > 0:
+			print("You may destroy ", kill_power, " targets.")
+			legal_fields = [enemies[0].get_parent()]
+			var select_function = select_target()
+			var target = yield()
+			select_function.resume()
+			# legal_fields[0].remove_child(target)
+			print(target.NAME, " was removed.")
+			draw_field(legal_fields[0], 50)
+		else:
 			print("You don't win.")
-		get_node("Sleep").start()
-		yield(get_node("Sleep"), "timeout")
+		# get_node("Sleep").start()
+		# yield(get_node("Sleep"), "timeout")
 			
 		for i in allies:
 			if i.get_filename() == Card.get_path():
-				i.OCCUPANCY = 1
-				update_bbcode(i)
+				default_card(i)
 
 		for i in enemies:
 			if i.get_filename() == Card.get_path():
-				i.OCCUPANCY = 1
-				update_bbcode(i)
+				default_card(i)
 
 	phase[1] = "End"
+	
+	battle_function = null
 
+func send_target(object, resume_function):
+	if object.get_filename() == Card.get_path() and object.get_parent() in legal_fields:
+		object = resume_function.resume(object)
+		print(object)
+		return object
+	else:
+		print("That is not a valid target.")
+		return null
+		
 # function to catch GUI input and decide what to do
 func mouse_input(object):
 	if phase[1] == "Activate":
-		if object.get_filename() == Card.get_path() and object.get_parent() in legal_fields:
-			object = effect_function.resume(object)
+		object = send_target(object, effect_function)
+		if object != null:
 			move_card(object, get_child(phase[0]), "Light_Field")
 			phase[1] = "Prep"
-		else:
-			print("That is not a valid target.")
+	elif phase[1] == "Battle":
+		send_target(object, battle_function)
+#		if battle_function is GDScriptFunctionState:
+#			print("1", battle_function.is_valid())
+#			print("2", battle_function.is_valid(true))
+#			battle_function.resume(object)
+#		else:
+#			print("Nope")
 	else:
 		if get_child(phase[0]).is_a_parent_of(object):
 			if object.get_name() == "Deck":
@@ -208,7 +257,7 @@ func mouse_input(object):
 			elif object.get_name() == "End":
 				if phase[1] == "Prep":
 					phase[1] = "Battle"
-					battle_phase()
+					battle_function = battle_phase()
 				elif phase[1] == "End":
 					phase[0] = (phase[0] - 1) * -1
 					phase[1] = "Draw"
@@ -237,3 +286,14 @@ func _ready():
 			var curr = get_child(i).get_child(j)
 			if curr.get_class() == "Area2D":
 				curr.connect("click", self, "mouse_input", [curr])
+				
+func _process(delta):
+	if temp_overload != null:
+		print("let's try it")
+		print(battle_function)
+		var meme_func = battle_function.resume(temp_overload)
+		if not(battle_function.is_valid(true)):
+			battle_function = meme_func
+			print(battle_function.is_valid(true), " ", phase[1])
+		temp_overload = null
+		
