@@ -33,10 +33,6 @@ _sections_unfolded = [ "Transform", "Z Index" ]
 
 position = Vector2( 887.099, 561.659 )
 
-[node name="Yeet" parent="Player" index="4" instance=ExtResource( 3 )]
-
-position = Vector2( 934.683, 300.798 )
-
 [node name="Enemy" type="Node" parent="." index="1"]
 
 [node name="Deck" parent="Enemy" index="0" instance=ExtResource( 3 )]

@@ -2,7 +2,10 @@
  - Soft Code sizes
 	- Screen Size
 	- Card Size
- - Enumerate removal during battle
+ - Update bbcode as targets destroyed
+ - Effects
+	- Implement invulnerability during Battle
+	- design other effects
 """
 
 # Inheritance
@@ -18,6 +21,7 @@ var legal_fields = [] # For targeting purposes
 var effect_function
 var battle_function
 
+# Yield Function Returns
 var display_occupancy_return
 
 # Exports
@@ -120,6 +124,12 @@ func default_card(card):
 	card.OCCUPANCY = 1 # All cards have 1 occ. factor
 	card.INVUL = false # All cards are not invulnerable
 	update_card_gui(card)
+	
+# function to default all cards in a field
+func default_field(field):
+	for i in field.get_children():
+		if check_card(i):
+			default_card(i)
 	
 # function to setup and takedown card targeting from user
 func select_target():
@@ -245,7 +255,9 @@ func battle_phase():
 		var kill_power = yield()
 		if kill_power > 0:
 			legal_fields = [enemies[0].get_parent()]
-			while len(legal_fields[0].get_children()) > 1:
+			while len(legal_fields[0].get_children()) > 1 and kill_power > 0:
+				
+				phase[1] = "Battle" # 'battle' phase takes user input
 				
 				# Prompt and Obtain kill targets from user
 				print("You may destroy ", kill_power, " targets.")
@@ -262,18 +274,10 @@ func battle_phase():
 			
 		else:
 			print("You don't win.")
-			
-		# Reset all Cards to default
-		for i in allies:
-			if check_card(i):
-				default_card(i)
-		for i in enemies:
-			if check_card(i):
-				default_card(i)
 
+	# Finish the player's turn
 	phase[1] = "End"
-	
-	# battle_function = null
+	mouse_input(get_child(phase[0]).get_node("End"))
 
 # function to detect a selected card and send it to a yielded function
 func send_target(object, resume_function):
@@ -296,7 +300,9 @@ func mouse_input(object):
 			move_card(valid[1], get_child(phase[0]), "Light_Field")
 			phase[1] = "Prep"
 	elif phase[1] == "Battle":
-		send_target(object, battle_function)
+		var valid = send_target(object, battle_function)
+		if valid[0] and valid[1] != null:
+			battle_function = valid[1]
 	
 	else:
 		# Determine if selection is on current side
@@ -324,11 +330,15 @@ func mouse_input(object):
 			# End: Prep to Battle; End to Other Player; Draw to Error
 			elif object.get_name() == "End":
 				if phase[1] == "Prep":
-					phase[1] = "Battle"
+					phase[1] = "Battliing"
 					battle_function = battle_phase()
 				elif phase[1] == "End":
+					# Change Player
 					phase[0] = (phase[0] - 1) * -1
 					phase[1] = "Draw"
+					# Reset all light Cards
+					default_field(get_node("Player/Light_Field"))
+					default_field(get_node("Enemy/Light_Field"))
 				else:
 					print(phase[1])
 					print("You can't do that right now.")
@@ -355,13 +365,20 @@ func _ready():
 				curr.connect("click", self, "mouse_input", [curr])
 				
 func _process(delta):
+	
 	# Check if ready to resume battle_function
 	if display_occupancy_return != null:
 		var temp_func = battle_function.resume(display_occupancy_return)
 		if not(battle_function.is_valid(true)):
 			battle_function = temp_func 
 		display_occupancy_return = null
-		
+
+
+# -----------------------------------------------------------------
+# For Later Debugging
+# -----------------------------------------------------------------
+# Figure out why send_target works, but this doesnt
+
 #		if battle_function is GDScriptFunctionState:
 #			print("1", battle_function.is_valid())
 #			print("2", battle_function.is_valid(true))
