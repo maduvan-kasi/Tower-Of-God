@@ -3,7 +3,6 @@
 	- Screen Size
 	- Card Size
  - Enumerate removal during battle
- - Visually remove cards after battle
 """
 
 # Inheritance
@@ -19,7 +18,7 @@ var legal_fields = [] # For targeting purposes
 var effect_function
 var battle_function
 
-var temp_overload
+var display_occupancy_return
 
 # Exports
 export (PackedScene) var Card
@@ -101,6 +100,10 @@ func shuffle_deck(deck):
 		deck.remove(i)
 	return temp_deck
 	
+# function to check if an object is a Card
+func check_card(object):
+	return object.get_filename() == Card.get_path()
+	
 # function to move Card from Shadow/Light Field to the other
 func move_card(card, side, dest_field):
 	# Reparent Card
@@ -125,7 +128,7 @@ func select_target():
 	for i in legal_fields:
 		var card_count = i.get_children()
 		for j in card_count:
-			if j.get_filename() == Card.get_path():
+			if check_card(j):
 				j.get_node("Target_Decal").visible = true
 	
 	# Prompt and Yield to the user
@@ -137,7 +140,7 @@ func select_target():
 	for i in legal_fields:
 		var card_count = i.get_children()
 		for j in card_count:
-			if j.get_filename() == Card.get_path():
+			if check_card(j):
 				j.get_node("Target_Decal").visible = false
 	
 # function to determine a Card's effect and enact it
@@ -199,7 +202,7 @@ func display_occupancys(allies, enemies):
 	
 	# Iterate through ally Occupancies
 	for i in allies:
-		if i.get_filename() == Card.get_path():
+		if check_card(i):
 			while i.OCCUPANCY > 0:
 				i.OCCUPANCY -= 1
 				if enemy_alive:
@@ -222,7 +225,7 @@ func display_occupancys(allies, enemies):
 				else:
 					excess_occupancy += 1 # total_ally_occ - total_enemy_occ
 
-	temp_overload = excess_occupancy #could prolly refactor without global?
+	display_occupancy_return = excess_occupancy # use global for return since function yields with signal
 
 # function to run through and determine the outcomes of Battle
 func battle_phase():
@@ -233,34 +236,39 @@ func battle_phase():
 	
 	# Determine if battle is trivial (only one side)
 	if len(allies) == 1:
-		print("There is nothing you can do.")
+		print("You have no one to use in battle.")
 	elif len(enemies) == 1:
-		print("You styll win, hol up.")
+		print("You have no one to battle with.")
 		
 	else:
 		display_occupancys(allies, enemies)
 		var kill_power = yield()
 		if kill_power > 0:
 			legal_fields = [enemies[0].get_parent()]
+			while len(legal_fields[0].get_children()) > 1:
+				
+				# Prompt and Obtain kill targets from user
+				print("You may destroy ", kill_power, " targets.")
+				var select_function = select_target()
+				var target = yield()
+				select_function.resume()
+				
+				# Remove Target from Field
+				target.monitoring = false
+				legal_fields[0].remove_child(target)
+				draw_field(legal_fields[0], 50)
+				
+				kill_power -= 1
 			
-			# Prompt and Obtain kill targets from user
-			print("You may destroy ", kill_power, " targets.")
-			var select_function = select_target()
-			var target = yield()
-			select_function.resume()
-			
-			# legal_fields[0].remove_child(target)
-			print(target.NAME, " was removed.")
-			draw_field(legal_fields[0], 50)
 		else:
 			print("You don't win.")
 			
 		# Reset all Cards to default
 		for i in allies:
-			if i.get_filename() == Card.get_path():
+			if check_card(i):
 				default_card(i)
 		for i in enemies:
-			if i.get_filename() == Card.get_path():
+			if check_card(i):
 				default_card(i)
 
 	phase[1] = "End"
@@ -269,23 +277,24 @@ func battle_phase():
 
 # function to detect a selected card and send it to a yielded function
 func send_target(object, resume_function):
+	var valid = true
 	# Determine if Card is valid target
-	if object.get_filename() == Card.get_path() and object.get_parent() in legal_fields:
+	if check_card(object) and object.get_parent() in legal_fields:
 		object = resume_function.resume(object)
-		print(object) # debug
-		return object # is this necesscary pt1
 	else:
 		print("That is not a valid target.")
-		return null # is this necesscary pt 2
+		valid = false
+	return [valid, object]
 		
 # function to catch GUI input and decide what to do
 func mouse_input(object):
 	
 	# Determine if seeking for a Target
 	if phase[1] == "Activate":
-		object = send_target(object, effect_function)
-		move_card(object, get_child(phase[0]), "Light_Field")
-		phase[1] = "Prep"
+		var valid = send_target(object, effect_function)
+		if valid[0]:
+			move_card(valid[1], get_child(phase[0]), "Light_Field")
+			phase[1] = "Prep"
 	elif phase[1] == "Battle":
 		send_target(object, battle_function)
 	
@@ -347,11 +356,11 @@ func _ready():
 				
 func _process(delta):
 	# Check if ready to resume battle_function
-	if temp_overload != null:
-		var temp_func = battle_function.resume(temp_overload)
+	if display_occupancy_return != null:
+		var temp_func = battle_function.resume(display_occupancy_return)
 		if not(battle_function.is_valid(true)):
 			battle_function = temp_func 
-		temp_overload = null
+		display_occupancy_return = null
 		
 #		if battle_function is GDScriptFunctionState:
 #			print("1", battle_function.is_valid())

@@ -19,14 +19,14 @@ angular_damp = 1.0
 audio_bus_override = false
 audio_bus_name = "Master"
 script = ExtResource( 1 )
-_sections_unfolded = [ "Transform" ]
+_sections_unfolded = [ "Collision", "Transform" ]
 __meta__ = {
 "_edit_group_": true
 }
 NAME = null
 IMAGE = null
 LIGHT_EFFECT = null
-OCCUPIABILITY = 1
+OCCUPANCY = 1
 INVUL = false
 
 [node name="Target_Decal" type="ColorRect" parent="." index="0"]
@@ -120,7 +120,7 @@ margin_right = -24.0
 margin_bottom = -24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
-mouse_filter = 0
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
@@ -135,7 +135,7 @@ scroll_active = true
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "BBCode" ]
+_sections_unfolded = [ "Mouse" ]
 
 [node name="Invul_Decal" type="ColorRect" parent="." index="6"]
 
@@ -156,5 +156,6 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 color = Color( 1, 1, 1, 1 )
+_sections_unfolded = [ "Mouse" ]
 
 
