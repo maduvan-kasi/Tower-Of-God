@@ -190,7 +190,7 @@ func activate_effect(card):
 		
 	# Determine type of Effect and alter Cards accordingly
 	if effect[2] == "occ":
-		target.OCCUPANCY += int(effect[3])
+		target.OCCUPANCY = max(0, target.OCCUPANCY + int(effect[3])) # can't go below 0
 	elif effect[2] == "inv":
 		target.INVUL = true
 	else:
@@ -227,7 +227,7 @@ func display_occupancys(allies, enemies):
 					yield(get_node("Sleep"), "timeout")
 					
 					# Determine if enemies with Occupancy remain
-					if enemies[curr_enemy].OCCUPANCY <= 0:
+					while enemy_alive and enemies[curr_enemy].OCCUPANCY <= 0:
 						curr_enemy += 1
 						if curr_enemy >= len(enemies):
 							print("You win.")
@@ -311,7 +311,10 @@ func mouse_input(object):
 			# Deck only during Draw Phase
 			if object.get_name() == "Deck":
 				if phase[1] == "Draw":
-					draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
+					if len(get_child(phase[0]).get_node("Shadow_Field").get_children()) < 6:
+						draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
+					else:
+						print("You have too many cards in your Shadow Field.")
 					phase[1] = "Prep"
 				else:
 					print("You can't do that right now.")
