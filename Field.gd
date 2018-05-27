@@ -13,7 +13,7 @@ func _ready():
 
 func _unhandled_input(event):
 	if mouse_over and event is InputEventMouseButton and event.is_pressed():
-		get_tree().set_input_as_handled()
+		# get_tree().set_input_as_handled()
 		emit_signal("click")
 
 func mouse_status(over):

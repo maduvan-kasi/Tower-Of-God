@@ -26,6 +26,7 @@ var display_occupancy_return
 
 # Exports
 export (PackedScene) var Card
+export (PackedScene) var Field
 
 # function to create list of Card objects [from hard folder]
 func make_deck(deck):
@@ -175,8 +176,8 @@ func activate_effect(card):
 			var side = phase[0]
 			if i == "1":
 				side = (side - 1) * -1
-			legal_fields.append(get_child(side).get_node("Shadow_Field"))
-			legal_fields.append(get_child(side).get_node("Light_Field"))
+			legal_fields.append(get_node("Sides").get_child(side).get_node("Shadow_Field"))
+			legal_fields.append(get_node("Sides").get_child(side).get_node("Light_Field"))
 		for i in restriction[1]:
 			var j = (int(i) - 1) * -1
 			while j < len(legal_fields):
@@ -241,8 +242,8 @@ func display_occupancys(allies, enemies):
 func battle_phase():
 	
 	# Get lists of allies and enemies
-	var allies = get_child(phase[0]).get_node("Light_Field").get_children()
-	var enemies = get_child((phase[0] - 1) * -1).get_node("Light_Field").get_children()
+	var allies = get_node("Sides").get_child(phase[0]).get_node("Light_Field").get_children()
+	var enemies = get_node("Sides").get_child((phase[0] - 1) * -1).get_node("Light_Field").get_children()
 	
 	# Determine if battle is trivial (only one side)
 	if len(allies) == 1:
@@ -277,7 +278,7 @@ func battle_phase():
 
 	# Finish the player's turn
 	phase[1] = "End"
-	mouse_input(get_child(phase[0]).get_node("End"))
+	mouse_input(get_node("Sides").get_child(phase[0]).get_node("End"))
 
 # function to detect a selected card and send it to a yielded function
 func send_target(object, resume_function):
@@ -289,7 +290,10 @@ func send_target(object, resume_function):
 		print("That is not a valid target.")
 		valid = false
 	return [valid, object]
-		
+
+func field_input(object):
+	pass
+
 # function to catch GUI input and decide what to do
 func mouse_input(object):
 	
@@ -297,7 +301,7 @@ func mouse_input(object):
 	if phase[1] == "Activate":
 		var valid = send_target(object, effect_function)
 		if valid[0]:
-			move_card(valid[1], get_child(phase[0]), "Light_Field")
+			move_card(valid[1], get_node("Sides").get_child(phase[0]), "Light_Field")
 			phase[1] = "Prep"
 	elif phase[1] == "Battle":
 		var valid = send_target(object, battle_function)
@@ -306,13 +310,13 @@ func mouse_input(object):
 	
 	else:
 		# Determine if selection is on current side
-		if get_child(phase[0]).is_a_parent_of(object):
+		if get_node("Sides").get_child(phase[0]).is_a_parent_of(object):
 			
 			# Deck only during Draw Phase
 			if object.get_name() == "Deck":
 				if phase[1] == "Draw":
-					if len(get_child(phase[0]).get_node("Shadow_Field").get_children()) < 6:
-						draw_card(get("deck_" + str(phase[0])), get_child(phase[0]).get_node("Shadow_Field"))
+					if len(get_node("Sides").get_child(phase[0]).get_node("Shadow_Field").get_children()) < 6:
+						draw_card(get("deck_" + str(phase[0])), get_node("Sides").get_child(phase[0]).get_node("Shadow_Field"))
 					else:
 						print("You have too many cards in your Shadow Field.")
 					phase[1] = "Prep"
@@ -327,7 +331,7 @@ func mouse_input(object):
 					phase[1] = "Activate"
 					effect_function = activate_effect(object)
 					if not(effect_function is GDScriptFunctionState):
-						move_card(object, get_child(phase[0]), "Light_Field")
+						move_card(object, get_node("Sides").get_child(phase[0]), "Light_Field")
 						phase[1] = "Prep"
 			
 			# End: Prep to Battle; End to Other Player; Draw to Error
@@ -340,14 +344,28 @@ func mouse_input(object):
 					phase[0] = (phase[0] - 1) * -1
 					phase[1] = "Draw"
 					# Reset all light Cards
-					default_field(get_node("Player/Light_Field"))
-					default_field(get_node("Enemy/Light_Field"))
+					default_field(get_node("Sides/Player/Light_Field"))
+					default_field(get_node("Sides/Enemy/Light_Field"))
 				else:
 					print(phase[1])
 					print("You can't do that right now.")
+			
+			else:
+				print(object.name)
 					
 		else:
 			print("It is not your turn.")
+			
+func set_signals(children):
+	for i in children:
+		if i.get_class() == "Area2D":
+			if i.get_filename() == Field.get_path():
+				i.connect("click", self, "field_input", [i])
+			else:
+				i.connect("click", self, "mouse_input", [i])
+		var sub_children = i.get_children()
+		if sub_children != []:
+			set_signals(sub_children)
 
 func _ready():
 	
@@ -359,13 +377,7 @@ func _ready():
 	deck_1 = shuffle_deck(deck_1)
 	
 	# Connect GUI signals from drag-drop objects
-	var num_sides = get_child_count()
-	for i in num_sides:
-		var num_nodes = get_child(i).get_child_count()
-		for j in num_nodes:
-			var curr = get_child(i).get_child(j)
-			if curr.get_class() == "Area2D":
-				curr.connect("click", self, "mouse_input", [curr])
+	set_signals(get_children())
 				
 func _process(delta):
 	
